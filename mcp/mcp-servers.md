@@ -12,11 +12,16 @@
 키를 손으로 넣는 대신, 루트의 `.env` 에 넣고 `install.sh` 가 자동 등록하게 할 수 있습니다.
 
 ```bash
-cp .env.example .env      # EXA_API_KEY, FILESYSTEM_DIR 채우기
-bash install.sh           # .env 를 읽어 아래 서버들을 자동 등록
+cp .env.example .env.local   # EXA_API_KEY, FILESYSTEM_DIR 채우기
+bash install.sh              # .env.local 을 읽어 아래 서버들을 user 스코프로 자동 등록
 ```
 
-`.env` 는 `.gitignore` 로 저장소에 올라가지 않습니다. 아래는 수동 등록용 원본 명령입니다.
+`.env.local` / `.env` 는 `.gitignore` 로 저장소에 올라가지 않습니다.
+`install.sh` 는 아래 서버를 `-s user`(모든 프로젝트에서 사용) 스코프로 등록합니다.
+아래는 수동 등록용 원본 명령입니다.
+
+> 참고: `plugin:oh-my-claudecode:t` 서버는 OMC **플러그인이 자체 제공**하므로
+> 여기서 따로 추가하지 않습니다 (플러그인 설치 시 자동 포함).
 
 ## 1. Context7 — 문서/코드 컨텍스트 (키 불필요)
 
@@ -45,6 +50,14 @@ claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 ```
 
 > GitHub는 최초 연결 시 `/mcp` 메뉴에서 github를 선택해 로그인해야 활성화됩니다.
+
+## 5. Lazyweb — 제품/UI 작업 도구 (HTTP)
+
+```bash
+claude mcp add --transport http lazyweb https://www.lazyweb.com/mcp
+```
+
+> 최초 사용 시 로그인/인증 안내가 나오면 따르세요.
 
 ## 확인
 

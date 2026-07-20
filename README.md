@@ -10,9 +10,12 @@ config/
   CLAUDE.md         # 전역 OMC 설정 (~/.claude/CLAUDE.md)
   settings.json     # 전역 설정: 상태줄, 플러그인, 팀 플래그 (~/.claude/settings.json)
   omc-config.json   # OMC 기본값: 실행 모드, 팀 설정 (~/.claude/.omc-config.json)
+plugins/
+  plugins.md        # 마켓플레이스 + 설치 플러그인 목록/재설치 명령
 mcp/
   mcp-servers.md    # MCP 서버 재설치 명령 (API 키는 플레이스홀더)
-install.sh          # 설정을 새 PC로 복원하는 스크립트
+install.sh          # 마켓플레이스·플러그인·MCP·설정을 한 번에 복원하는 스크립트
+.env.example        # 키 템플릿 (.env.local 로 복사해 실제 값 입력)
 ```
 
 ## 현재 설정 요약
@@ -21,7 +24,10 @@ install.sh          # 설정을 새 PC로 복원하는 스크립트
 - **기본 실행 모드:** `ultrawork`
 - **에이전트 팀:** 활성화 (에이전트 3, provider `claude`)
 - **HUD 상태줄:** 활성화
-- **MCP 서버:** Context7, Filesystem, Exa, GitHub
+- **마켓플레이스:** `claude-plugins-official`, `omc`
+- **플러그인:** `oh-my-claudecode` (enabled)
+- **MCP 서버:** Context7, Filesystem, Exa, GitHub, Lazyweb
+  (+ `oh-my-claudecode` 플러그인이 자체 제공하는 `t` 서버)
 
 ## 새 PC에서 복원하기
 
