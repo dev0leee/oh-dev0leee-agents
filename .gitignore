@@ -1,0 +1,16 @@
+# OMC 세션 상태 (일시적, 커밋 불필요)
+.omc/state/
+.omc/sessions/
+.omc/logs/
+.omc/cache/
+
+# 혹시라도 실수로 실제 시크릿 파일이 들어오는 것 방지
+*.credentials.json
+.claude.json
+**/secrets.*
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
