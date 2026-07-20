@@ -21,10 +21,13 @@ backup() {
 }
 
 # ── 1. 전역 설정 파일 ─────────────────────────────────────────────
-echo "==> [1/4] 전역 설정 파일 복사"
+echo "==> [1/4] 전역 설정 파일 + statusline 스크립트 복사"
 backup "$CLAUDE_DIR/CLAUDE.md";        cp "$REPO_DIR/config/CLAUDE.md"       "$CLAUDE_DIR/CLAUDE.md"
 backup "$CLAUDE_DIR/settings.json";    cp "$REPO_DIR/config/settings.json"   "$CLAUDE_DIR/settings.json"
 backup "$CLAUDE_DIR/.omc-config.json"; cp "$REPO_DIR/config/omc-config.json" "$CLAUDE_DIR/.omc-config.json"
+# 최소 statusline 스크립트 (settings.json 의 statusLine 이 이 파일을 가리킴)
+mkdir -p "$CLAUDE_DIR/hud"
+cp "$REPO_DIR/hud/omc-hud-min.mjs" "$CLAUDE_DIR/hud/omc-hud-min.mjs"
 
 # ── 2. 마켓플레이스 + 플러그인 ────────────────────────────────────
 echo ""
