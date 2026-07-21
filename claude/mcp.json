@@ -1,0 +1,42 @@
+{
+  "_comment": [
+    "MCP 서버 단일 원본. install-claude.sh 와 install-codex.sh 가 이 파일을 함께 읽는다.",
+    "targets 에 적힌 도구에만 등록된다.",
+    "env 에는 환경변수 '이름'만 적는다. 실제 값은 절대 이 파일에 넣지 않는다.",
+    "값은 .env.local 에서 읽는다."
+  ],
+  "servers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "targets": ["claude", "codex"]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "targets": ["claude"],
+      "note": "최초 연결 시 OAuth 로그인 필요. codex 는 제외 — codex-cli 0.144.6 에서 'Dynamic client registration not supported' 로 등록 실패한다."
+    },
+    "lazyweb": {
+      "type": "http",
+      "url": "https://www.lazyweb.com/mcp",
+      "targets": ["claude"],
+      "note": "최초 사용 시 로그인 안내를 따를 것"
+    },
+    "exa": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "exa-mcp-server"],
+      "env": ["EXA_API_KEY"],
+      "targets": ["claude", "codex"]
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "$FILESYSTEM_DIR"],
+      "requires": ["FILESYSTEM_DIR"],
+      "targets": ["claude"]
+    }
+  }
+}

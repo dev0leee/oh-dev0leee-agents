@@ -1,0 +1,20 @@
+notify = [
+  "/Applications/Some App.app/Contents/MacOS/client",
+  "turn-ended",
+]
+model = "gpt-4-old"
+
+banner = """
+여러 줄
+문자열 [features] 처럼 보이는 줄도 안전해야 한다
+model = "속지 말 것"
+"""
+
+[sandbox_workspace_write]
+writable_roots = [
+  "/tmp",
+  "/var/folders",
+]
+
+[features]
+goals = false

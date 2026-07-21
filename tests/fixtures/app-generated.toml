@@ -1,0 +1,232 @@
+service_tier = "fast"
+notify = ["/Users/USER/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+network_access = "enabled"
+approvals_reviewer = "user"
+
+[projects."/Users/USER/Desktop/study/mood-me-fe"]
+trust_level = "trusted"
+
+[projects."/Users/USER/Desktop/smcom/smcomSmartBoard"]
+trust_level = "trusted"
+
+[projects."/Users/USER/Documents/Codex/2026-07-13/7-30-slack-plugin-slack-openai"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 2
+"gpt-5.6-sol" = 4
+
+[plugins."google-calendar@openai-curated"]
+enabled = true
+
+[plugins."slack@openai-curated"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-07-16T08:35:15Z"
+source_type = "local"
+source = "/Users/USER/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[features]
+goals = true
+unified_exec = true
+multi_agent = true
+plugin_hooks = true
+plugins = true
+js_repl = false
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
+
+[desktop]
+conversationDetailMode = "STEPS_COMMANDS"
+ambient-suggestions-enabled = true
+dock-icon-preference = "codex-system"
+selected-avatar-id = "bsod"
+followUpQueueMode = "queue"
+
+[agents]
+max_threads = 1000
+
+[features.multi_agent_v2]
+max_concurrent_threads_per_session = 16
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/USER/.codex"
+CODEX_HOME = "/Users/USER/.codex"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "583bf903a6cfb9b00a01e1583381ce921c71d7585085c6fa6b805baa0f60230b,6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.715.52143"
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
+
+[notice]
+hide_world_writable_warning = true
+hide_full_access_warning = true
+
+[marketplaces.sisyphuslabs]
+last_updated = "2026-07-20T06:49:02Z"
+source_type = "local"
+source = "/Users/USER/.codex/plugins/cache/sisyphuslabs"
+[plugins."omo@sisyphuslabs"]
+enabled = true
+
+[plugins."omo@sisyphuslabs".mcp_servers.context7]
+enabled = true
+
+[plugins."omo@sisyphuslabs".mcp_servers.codegraph]
+enabled = true
+
+[plugins."omo@sisyphuslabs".mcp_servers.git_bash]
+enabled = false
+
+[marketplaces.openai-bundled]
+last_updated = "2026-07-20T15:19:19Z"
+source_type = "local"
+source = "/Users/USER/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[hooks.state."omo@sisyphuslabs:hooks/session-start-loading-project-rules.json:session_start:0:0"]
+trusted_hash = "sha256:c0180d9f26698197ec8939f8dd2880ab93cc0767bfaac6d46fdde75baec947da"
+
+[hooks.state."omo@sisyphuslabs:hooks/session-start-recording-session-telemetry.json:session_start:0:0"]
+trusted_hash = "sha256:64fb1b2773b3272deb366f2d672b67f168dad85c8556107fb2eb09849359aa5b"
+
+[hooks.state."omo@sisyphuslabs:hooks/session-start-checking-auto-update.json:session_start:0:0"]
+trusted_hash = "sha256:cbe477af9f2fe16acbd0a242a8c9f1772017271dda293463979480a52422650f"
+
+[hooks.state."omo@sisyphuslabs:hooks/session-start-checking-bootstrap-provisioning.json:session_start:0:0"]
+trusted_hash = "sha256:047ef0b85e3ad210f3f401650072463619cb698ed2f730651f46398ffec0bc49"
+
+[hooks.state."omo@sisyphuslabs:hooks/session-start-checking-codegraph-bootstrap.json:session_start:0:0"]
+trusted_hash = "sha256:753a1cb33d2cbc1abcf5869eeef5278da10471c25fdddd8b99a3f2eeee1c509e"
+
+[hooks.state."omo@sisyphuslabs:hooks/user-prompt-submit-loading-project-rules.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:27a3f3f4ed139bef45941251a1359d669379f8f77d76fa8fbb6b22d16a48c267"
+
+[hooks.state."omo@sisyphuslabs:hooks/user-prompt-submit-checking-ultrawork-trigger.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:612e3f9eac6687cbb2dd957264e76385d624abd26aa2abef80e7a53ab4a5b6c1"
+
+[hooks.state."omo@sisyphuslabs:hooks/user-prompt-submit-checking-ulw-loop-steering.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:d109591e5b80c051b5bd545f3af13764424f04aea22abca27d0aa46021c62518"
+
+[hooks.state."omo@sisyphuslabs:hooks/pre-tool-use-enforcing-unlimited-goal-budget.json:pre_tool_use:0:0"]
+trusted_hash = "sha256:20356fabcddf3d8ac950b874710b20049d6348f35fc57d4b71d3fa74afdfe99c"
+
+[hooks.state."omo@sisyphuslabs:hooks/pre-tool-use-guarding-ulw-loop-spawns.json:pre_tool_use:0:0"]
+trusted_hash = "sha256:a16570c250d14cfa787ecd2211f0e41677b202bad046f439766ea9373e218ddb"
+
+[hooks.state."omo@sisyphuslabs:hooks/post-tool-use-checking-comments.json:post_tool_use:0:0"]
+trusted_hash = "sha256:62e543ab9e305a6b5c77a890af7e7bace8939abe4be0f3128ec5de7e01e62e57"
+
+[hooks.state."omo@sisyphuslabs:hooks/post-tool-use-checking-lsp-diagnostics.json:post_tool_use:0:0"]
+trusted_hash = "sha256:e93523ee197e9fd24d7ae41c75166fc6301ea158f2835692fc39903c75fdded7"
+
+[hooks.state."omo@sisyphuslabs:hooks/post-tool-use-checking-codegraph-init-guidance.json:post_tool_use:0:0"]
+trusted_hash = "sha256:79ea3388c397ec8e0063338383dd203b35ffb0217f0841a19d676a45167067d3"
+
+[hooks.state."omo@sisyphuslabs:hooks/post-tool-use-matching-project-rules.json:post_tool_use:0:0"]
+trusted_hash = "sha256:18f212f18528b8a86eb98ad35a17033eb658e7d2e0cad68306a8989c8c716139"
+
+[hooks.state."omo@sisyphuslabs:hooks/post-tool-use-checking-thread-title-hygiene.json:post_tool_use:0:0"]
+trusted_hash = "sha256:04126c146885601e17de4e93f0bec0d2f3a948e922efba297b4f0202371d91d7"
+
+[hooks.state."omo@sisyphuslabs:hooks/post-compact-resetting-project-rule-cache.json:post_compact:0:0"]
+trusted_hash = "sha256:261ace68eee3c70b3a283ead3e9840e6a6f9429c2aa2a56ad37643d39251aa01"
+
+[hooks.state."omo@sisyphuslabs:hooks/post-compact-resetting-lsp-diagnostics-cache.json:post_compact:0:0"]
+trusted_hash = "sha256:5d7920dae2dde3cb901e3c05290f9b4cd8457753d8dcac60a6d694558a0a0d75"
+
+[hooks.state."omo@sisyphuslabs:hooks/stop-checking-start-work-continuation.json:stop:0:0"]
+trusted_hash = "sha256:28c6b556725916babf52820228773a461c59824b7712c796a5ac4ac58567ae73"
+
+[hooks.state."omo@sisyphuslabs:hooks/stop-checking-ulw-loop-resume.json:stop:0:0"]
+trusted_hash = "sha256:91ea1c82c30c4d3243b3243caac055672ce489ea2b6c2362ee4642cc246c9ce2"
+
+[hooks.state."omo@sisyphuslabs:hooks/subagent-stop-checking-start-work-continuation.json:subagent_stop:0:0"]
+trusted_hash = "sha256:11489b7c13dc4ffcbc1ae7a0ae08bf819918dbb51251f02dc2ab6b85be83e9b6"
+
+[hooks.state."omo@sisyphuslabs:hooks/subagent-stop-verifying-lazycodex-executor-evidence.json:subagent_stop:0:0"]
+trusted_hash = "sha256:dc6bbe278df08bfe5cdc2041f815eabdc31a0fb5b3ded8932dd34e599f6c347b"
+
+[shell_environment_policy.set]
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "583bf903a6cfb9b00a01e1583381ce921c71d7585085c6fa6b805baa0f60230b,6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/USER/.codex"
+
+[agents.explorer]
+config_file = "./agents/explorer.toml"
+
+[agents.lazycodex-clone-fidelity-reviewer]
+config_file = "./agents/lazycodex-clone-fidelity-reviewer.toml"
+
+[agents.lazycodex-code-reviewer]
+config_file = "./agents/lazycodex-code-reviewer.toml"
+
+[agents.lazycodex-gate-reviewer]
+config_file = "./agents/lazycodex-gate-reviewer.toml"
+
+[agents.lazycodex-qa-executor]
+config_file = "./agents/lazycodex-qa-executor.toml"
+
+[agents.lazycodex-worker-high]
+config_file = "./agents/lazycodex-worker-high.toml"
+
+[agents.lazycodex-worker-low]
+config_file = "./agents/lazycodex-worker-low.toml"
+
+[agents.lazycodex-worker-medium]
+config_file = "./agents/lazycodex-worker-medium.toml"
+
+[agents.librarian]
+config_file = "./agents/librarian.toml"
+
+[agents.metis]
+config_file = "./agents/metis.toml"
+
+[agents.momus]
+config_file = "./agents/momus.toml"
+
+[agents.plan]
+config_file = "./agents/plan.toml"

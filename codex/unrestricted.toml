@@ -1,0 +1,12 @@
+# ⚠️ 위험한 권한 설정. 기본 설치에는 포함되지 않는다.
+#
+#   ./scripts/install-codex.sh --unrestricted
+#
+# 로만 적용된다.
+#
+# 이 조합은 코덱스가 "승인 없이" "전체 디스크에" 임의 명령을 실행할 수 있다는 뜻이다.
+# 신뢰하지 않는 저장소를 열자마자 무단 실행이 가능해진다.
+# 격리된 환경에서만 쓰고, 평소에는 기본값(on-request / workspace-write)을 유지할 것.
+
+approval_policy = "never"
+sandbox_mode = "danger-full-access"

@@ -1,0 +1,43 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "deny": [
+      "Read(**/.env*)",
+      "Read(**/.dev.vars*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/secrets/**)",
+      "Read(**/credentials/**)",
+      "Read(**/.aws/**)",
+      "Read(**/.ssh/**)",
+      "Read(**/config/database.yml)",
+      "Read(**/config/credentials.json)",
+      "Read(**/.npmrc)",
+      "Read(**/.pypirc)",
+      "Write(**/.env*)",
+      "Write(**/secrets/**)",
+      "Write(**/.ssh/**)",
+      "Write(.github/workflows/*)",
+      "Bash(rm -rf *)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ./*)",
+      "Bash(rm -rf ~/)",
+      "Bash(rm -rf ..)",
+      "Bash(find * -delete)",
+      "Bash(shred*)",
+      "Bash(sudo *)",
+      "Bash(git push *)",
+      "Bash(npm publish *)",
+      "Bash(curl * | sh)",
+      "Bash(wget *)",
+      "Bash(chmod *)"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node ${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hud/omc-hud-min.mjs"
+  },
+  "tui": "fullscreen"
+}

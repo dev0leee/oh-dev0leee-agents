@@ -1,0 +1,13 @@
+model = "gpt-4-old"
+approval_policy = "untrusted"
+sandbox_mode = "read-only"
+service_tier = "flex"
+model_reasoning_effort = "low"
+approvals_reviewer = "auto_review"
+
+[features]
+goals = false
+js_repl = true
+
+[notice]
+hide_full_access_warning = true
