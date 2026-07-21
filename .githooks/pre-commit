@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# 스테이징된 내용에서 시크릿을 찾으면 커밋을 막는다.
+# 이 레포에서는 core.hooksPath=.githooks 로, 다른 레포에서는
+# ~/.config/git/hooks/pre-commit 심링크로 같은 파일이 돈다.
+#
+# 우회: git commit --no-verify  (정말 오탐일 때만)
+# 오탐이 반복되면 우회하지 말고 .gitleaks.toml 의 allowlist 에 넣을 것.
+set -euo pipefail
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  printf '\033[31m✗\033[0m gitleaks 가 없어 시크릿 검사를 못 했다.\n' >&2
+  printf '  brew install gitleaks 후 다시 커밋할 것 (검사 없이 가려면 --no-verify).\n' >&2
+  exit 1
+fi
+
+if ! gitleaks git --pre-commit --redact --staged --verbose; then
+  printf '\n\033[31m✗\033[0m 시크릿으로 보이는 값이 있어 커밋을 중단했다.\n' >&2
+  printf '  진짜 시크릿이면 스테이징에서 빼고, 오탐이면 .gitleaks.toml 이나 줄 끝 # gitleaks:allow 로 처리할 것.\n' >&2
+  exit 1
+fi

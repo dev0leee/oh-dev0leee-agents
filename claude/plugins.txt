@@ -1,0 +1,17 @@
+# Claude Code 마켓플레이스 / 플러그인 목록
+# 필드 구분자는 탭(TAB) 하나. 공백 구분은 URL 때문에 깨진다.
+#
+#   kind<TAB>name<TAB>value
+#   marketplace<TAB><이름><TAB><소스>
+#   plugin<TAB><plugin@marketplace><TAB>enabled|disabled
+#
+# 마켓플레이스는 참조하는 플러그인보다 먼저 와야 한다.
+# Codex 플러그인(omo@sisyphuslabs)은 로컬 캐시 마켓플레이스라 원본 URL 이 기록돼 있지 않다.
+# README 의 수동 단계를 참고할 것.
+
+marketplace	claude-plugins-official	anthropics/claude-plugins-official
+marketplace	omc	https://github.com/Yeachan-Heo/oh-my-claudecode.git
+marketplace	last30days-skill	mvanhorn/last30days-skill
+
+plugin	oh-my-claudecode@omc	enabled
+plugin	last30days@last30days-skill	disabled
