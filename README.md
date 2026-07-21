@@ -65,25 +65,25 @@ tests/            config.toml 병합기 회귀 테스트
 
 ### Claude 에 설치되는 것
 
-| 대상 | 방식 | 내용 |
+| 대상 | 방&#8288;식 | 내용 |
 |---|---|---|
-| `~/.claude/CLAUDE.md` | 링크 | 전역 지침 |
-| `~/.claude/.omc-config.json` | 링크 | OMC 기본값 |
-| `~/.claude/hud/omc-hud-min.mjs` | 링크 | statusline 스크립트 |
-| `~/.claude/skills/<name>` | 링크 | `skills/` 의 내 스킬 |
-| `~/.claude/settings.json` | 병합 | 전역 deny·ask 목록 + statusLine + tui — [소유권 기반 병합](docs/DETAILS.md#settingsjson-소유권) |
+| `~/.claude/CLAUDE.md` | 링&#8288;크 | 전역 지침 |
+| `~/.claude/.omc-config.json` | 링&#8288;크 | OMC 기본값 |
+| `~/.claude/hud/omc-hud-min.mjs` | 링&#8288;크 | statusline 스크립트 |
+| `~/.claude/skills/<name>` | 링&#8288;크 | `skills/` 의 내 스킬 |
+| `~/.claude/settings.json` | 병&#8288;합 | 전역 deny·ask 목록 + statusLine + tui — [소유권 기반 병합](docs/DETAILS.md#settingsjson-소유권) |
 | 마켓플레이스 | CLI | `claude-plugins-official`, `omc`, `last30days-skill` |
 | 플러그인 | CLI | `oh-my-claudecode@omc` (enabled), `last30days@last30days-skill` (disabled) |
 | MCP | CLI | `context7`, `lazyweb`, `exa`, `filesystem` |
 
 ### Codex 에 설치되는 것
 
-| 대상 | 방식 | 내용 |
+| 대상 | 방&#8288;식 | 내용 |
 |---|---|---|
-| `~/.codex/AGENTS.md` | 링크 | 전역 지침 (금지 명령 규칙 포함) |
-| `~/.codex/skills/<name>` | 링크 | `skills/` 의 내 스킬 (Claude 와 같은 원본) |
-| `~/.codex/unrestricted.config.toml` | 링크 | `codex --profile unrestricted` 용 위험 권한 프로필 |
-| `~/.codex/config.toml` | 병합 | `approval_policy` + `default_permissions` + 파일 glob deny (`hooks.state` / `projects` / `marketplaces` 는 보존) |
+| `~/.codex/AGENTS.md` | 링&#8288;크 | 전역 지침 (금지 명령 규칙 포함) |
+| `~/.codex/skills/<name>` | 링&#8288;크 | `skills/` 의 내 스킬 (Claude 와 같은 원본) |
+| `~/.codex/unrestricted.config.toml` | 링&#8288;크 | `codex --profile unrestricted` 용 위험 권한 프로필 |
+| `~/.codex/config.toml` | 병&#8288;합 | `approval_policy` + `default_permissions` + 파일 glob deny (`hooks.state` / `projects` / `marketplaces` 는 보존) |
 | 플러그인 | CLI | `omo@sisyphuslabs` — 미설치면 확인 후 `npx lazycodex-ai install` |
 | MCP | CLI | `context7`, `exa` |
 
