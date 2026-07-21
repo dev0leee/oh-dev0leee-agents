@@ -35,7 +35,11 @@ echo "==> [2/4] 마켓플레이스 + 플러그인 설치"
 if [ "$HAS_CLAUDE" -eq 1 ]; then
   claude plugin marketplace add anthropics/claude-plugins-official || true
   claude plugin marketplace add https://github.com/Yeachan-Heo/oh-my-claudecode.git || true
+  claude plugin marketplace add mvanhorn/last30days-skill || true
   claude plugin install oh-my-claudecode@omc -s user || true
+  # last30days: 설치는 하되 기본은 꺼둔다 (쓸 때만 claude plugin enable)
+  claude plugin install last30days@last30days-skill -s user || true
+  claude plugin disable last30days@last30days-skill -s user || true
 else
   echo "    claude CLI 없음 → 수동: /plugin 에서 omc 마켓 추가 후 oh-my-claudecode 설치"
 fi
