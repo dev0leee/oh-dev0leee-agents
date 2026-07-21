@@ -1,0 +1,10 @@
+# gitleaks 설정. 기본 룰셋을 그대로 쓰고 이 레포에만 필요한 예외를 얹는다.
+# 룰 전체 목록: https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "플레이스홀더만 들어가는 파일. 실제 값은 gitignore 된 .env.local 에만 둔다."
+paths = [
+  '''^\.env\.example$''',
+]

@@ -34,6 +34,8 @@ skills/           두 도구가 공유하는 내 스킬 (링크)
 templates/project/ 새 프로젝트에 복사할 시작 세트
 scripts/          설치·진단 도구
 tests/            config.toml 병합기 회귀 테스트
+.githooks/        git 훅 — pre-commit 에서 gitleaks 로 시크릿 검사
+.gitleaks.toml    gitleaks 룰 (기본 룰셋 + 이 레포 예외)
 ```
 
 ### 지침이 두 파일로 나뉜 이유
@@ -117,6 +119,7 @@ cp .env.example .env.local      # EXA_API_KEY, FILESYSTEM_DIR 채우기
 | `./scripts/install.sh --claude-only` / `--codex-only` | 한쪽만 |
 | `./scripts/install.sh --dry-run` | 아무것도 바꾸지 않고 계획만 출력 |
 | `./scripts/install-codex.sh --unrestricted` | Codex 위험 권한을 전역 적용 (확인 프롬프트) |
+| `./scripts/install-gitleaks.sh [--global]` | gitleaks pre-commit 훅 설치 (`--global` 은 모든 레포에 적용) |
 | `./scripts/doctor.sh` | 진단만. 아무것도 고치지 않는다 |
 | `./scripts/adopt.sh <홈경로> <레포경로>` | 기존 홈 파일을 레포로 흡수하고 링크로 교체 |
 | `./scripts/init-project.sh <경로>` | 새 프로젝트에 `AGENTS.md` / `CLAUDE.md` 배치 |
@@ -274,6 +277,25 @@ codex --profile unrestricted            # 그때만 (권장)
 - **`codex mcp add --env` 는 API 키를 `~/.codex/config.toml` 에 평문으로 쓴다.** 이 파일도 절대 레포에 넣지 않는다.
 - `scripts/extract_sections.py` 는 진단용 diff 도구라 `*_KEY`, `*_TOKEN`, `env` 테이블 값을 자동으로 `***` 로 가린다.
 - 실제 키는 `.env.local` 에만 둔다. 커밋 전 `git diff` 로 확인할 것.
+
+### gitleaks pre-commit 훅
+
+사람 눈으로 `git diff` 를 확인하는 건 언젠가 뚫린다. [gitleaks](https://github.com/gitleaks/gitleaks) 로 자동화해뒀다.
+
+```bash
+brew install gitleaks
+./scripts/install-gitleaks.sh            # 이 레포에만
+./scripts/install-gitleaks.sh --global   # 앞으로 만드는 모든 레포에도
+```
+
+- 훅 본체는 `.githooks/pre-commit` 하나뿐이다. 이 레포는 `core.hooksPath=.githooks` 로,
+  다른 레포는 `~/.config/git/hooks/pre-commit` 심링크로 **같은 파일**을 쓴다.
+- 스테이징된 내용만 검사한다(`gitleaks git --pre-commit --staged`). 걸리면 커밋이 중단된다.
+- 룰은 gitleaks 기본 룰셋 + `.gitleaks.toml` 의 예외. `.env.example` 은 플레이스홀더뿐이라 제외했다.
+- 오탐이면 `--no-verify` 로 우회하지 말고 `.gitleaks.toml` 의 `allowlist` 나 줄 끝 `# gitleaks:allow` 로 처리한다.
+- 히스토리 전체 검사: `gitleaks git . --redact`
+- ⚠️ `--global` 은 전역 `core.hooksPath` 를 켜므로 **기존 레포의 `.git/hooks/` 안 훅이 무시된다.**
+  husky 처럼 레포별로 `core.hooksPath` 를 잡는 도구는 영향이 없다. 스크립트가 적용 전에 확인을 받는다.
 
 ---
 
