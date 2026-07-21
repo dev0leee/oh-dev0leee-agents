@@ -58,17 +58,18 @@ if [ "$UNRESTRICTED" -eq 1 ]; then
 fi
 
 target="$CODEX_DIR/config.toml"
-mkdir -p "$CODEX_DIR"
-[ -f "$target" ] || : > "$target"
-merged="$(python3 "$REPO/scripts/toml_upsert.py" "${overlays[@]}" < "$target")"
+current=""
+[ -f "$target" ] && current="$(cat "$target")"
+merged="$(printf '%s' "$current" | python3 "$REPO/scripts/toml_upsert.py" "${overlays[@]}")"
 
-if [ "$merged" = "$(cat "$target")" ]; then
+if [ "$merged" = "$current" ]; then
   skip "config.toml (변경 없음)"
 elif [ "$DRY_RUN" -eq 1 ]; then
-  diff <(cat "$target") <(printf '%s\n' "$merged") || true
+  diff <(printf '%s\n' "$current") <(printf '%s\n' "$merged") || true
   skip "(dry-run) config.toml 을 위와 같이 병합"
 else
   backup "$target"
+  mkdir -p "$CODEX_DIR"
   printf '%s\n' "$merged" > "$target.tmp"
 
   # 1) 문법 검사

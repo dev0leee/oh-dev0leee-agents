@@ -59,7 +59,6 @@ backup() {
 link_file() {
   local src="$REPO/$1" dst="$2" label="${3:-$2}"
   [ -e "$src" ] || { err "원본이 없다: $src"; return 1; }
-  mkdir -p "$(dirname "$dst")"
 
   if [ -L "$dst" ]; then
     local cur
@@ -81,6 +80,7 @@ link_file() {
     skip "(dry-run) $label -> $1"
     return 0
   fi
+  mkdir -p "$(dirname "$dst")"
   ln -sfn "$src" "$dst"
   ok "$label -> $1"
 }
