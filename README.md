@@ -123,6 +123,18 @@ cp .env.example .env.local      # EXA_API_KEY, FILESYSTEM_DIR 채우기
 
 `--yes` 는 **"질문 없이 진행"** 의 의미로만 쓴다. 위험 설정을 켜는 건 `--unrestricted` 뿐이다.
 
+### 레포를 다른 경로로 옮겼다면
+
+심볼릭 링크는 절대경로를 가리키므로 **레포를 옮기면 7개가 전부 끊어진다.**
+`~/.claude/CLAUDE.md` 가 죽으면 전역 지침이 통째로 사라지는데 조용히 사라져서 알아채기 어렵다.
+
+```bash
+cd <새 경로>
+./scripts/install.sh      # 끊어진 링크를 새 경로로 다시 건다
+```
+
+`doctor.sh` 도 링크가 끊어졌거나 엉뚱한 곳을 가리키면 잡아낸다.
+
 ### 스킬 추가하기
 
 ```bash
@@ -182,16 +194,19 @@ plugin<TAB><plugin@marketplace><TAB>enabled|disabled
 
 | Claude (`permissions`) | Codex 대응 | 상태 |
 |---|---|---|
-| `deny: Read(**/.env*)` 등 파일 glob | `[permissions.dev.filesystem]` 의 `"deny"` | ✅ 직접 대응 |
-| `deny: Write(.github/workflows/*)` | `".github/workflows/**" = "read"` (읽기만) | ✅ 직접 대응 |
-| `deny: Bash(sudo *)`, `Bash(rm -rf *)` | `sandbox_mode = "workspace-write"` — 워크스페이스 밖 쓰기 차단 + 에스컬레이션 시 승인 | ⚠️ 개념이 다름 |
-| `deny: Bash(curl * \| sh)`, `Bash(wget *)` | 샌드박스의 `restricted network` | ⚠️ 간접 |
-| `deny: Bash(git push *)`, `Bash(npm publish *)` | — | ❌ **직접 대응 없음** |
-| `allow: [...]` 화이트리스트 | — | ❌ 대응 없음 (Codex 는 승인 정책으로 처리) |
+| `deny: Read(**/.env*)` 등 파일 glob | `[permissions.locked.filesystem]` 의 `"deny"` | ✅ 강제됨 |
+| `deny: Write(.github/workflows/*)` | `".github/workflows/**" = "deny"` | ✅ 강제됨 |
+| `deny: Bash(rm -rf *)`, `sudo`, `git push`, `npm publish`, `chmod -R`, `curl \| sh`, `wget \| sh`, `find . -delete`, `shred` | `instructions/AGENTS.md` 의 **"금지 명령"** 규칙 | ⚠️ **지침일 뿐 강제 아님** |
+| `allow: [...]` 화이트리스트 | `approval_policy = "untrusted"` (신뢰된 명령 외 승인) | ⚠️ 개념이 다름 |
 
-Codex 에도 명령 단위 규칙(`~/.codex/rules/*.rules` 의 `prefix_rule`)이 있어 보이지만,
-설정 로드 시점에 검증되지 않아 `decision` 에 어떤 값이 유효한지 확인하지 못했다.
-검증 못 한 DSL 로 보안 규칙을 만들지 않았다. 필요해지면 그때 확인해서 추가할 것.
+**중요한 비대칭**: Claude 는 `permissions.deny` 가 하드 차단이지만, Codex 에는 명령 단위 차단이 없다.
+그래서 위험 명령은 `AGENTS.md` 규칙으로만 막힌다 — 모델이 규칙을 어기면 막을 방법이 없다.
+파일 접근만 `[permissions.locked]` 로 실제 강제된다.
+
+`~/.codex/rules/*.rules` 의 `prefix_rule` 로 명령을 막을 수 있어 보였지만, `decision` 에
+`deny`/`reject`/`forbid`/`ask` 를 전부 넣어도 모두 통과했다. 설정 로드 시점에 검증되지 않는다는
+뜻이라 어떤 값이 실제로 동작하는지 확인하지 못했다. 검증 못 한 DSL 로 보안 규칙을 만들면
+"막고 있다"는 착각만 준다.
 
 ### 어디에 무엇이 들어있나
 
@@ -199,7 +214,8 @@ Codex 에도 명령 단위 규칙(`~/.codex/rules/*.rules` 의 `prefix_rule`)이
 |---|---|
 | `claude/settings.json` (전역) | **deny 목록만.** 모든 프로젝트에 걸리는 안전망 |
 | `templates/project/.claude/settings.json` | allow + deny + `defaultMode: acceptEdits` 전체 |
-| `codex/config.toml` | `default_permissions = "dev"` + `[permissions.dev.filesystem]` |
+| `codex/config.toml` | `approval_policy = "untrusted"` + `default_permissions = "locked"` + 파일 glob deny |
+| `instructions/AGENTS.md` | Codex 용 금지 명령 목록 (Codex 에 대응 기능이 없어서) |
 
 전역에 allow 목록을 넣지 않은 이유: `Write(src/**)`, `Bash(npm run *)` 은 프로젝트 구조를
 전제하므로 모든 프로젝트에 적용하면 의미가 없다. `defaultMode: acceptEdits` 도 프로젝트 단위로만 켠다.
@@ -217,6 +233,14 @@ Codex 에도 명령 단위 규칙(`~/.codex/rules/*.rules` 의 `prefix_rule`)이
   `[features]` 뒤에 두면 `features.default_permissions` 가 되어 `expected a boolean` 으로 실패한다
   (문법은 멀쩡해서 `tomllib` 파싱만으로는 안 잡힌다 — `install-codex.sh` 가 설치 전에
   격리된 `CODEX_HOME` 으로 코덱스에 직접 물어보고, 거부되면 원본을 건드리지 않는다)
+- **경로 하나당 접근수준 하나다.** Claude 처럼 Read deny 목록과 Write deny 목록을 따로 쓰면
+  같은 키가 두 번 나와 `duplicate key` 로 파싱이 실패한다. `"deny"` 하나가 읽기·쓰기를 모두 막는다
+- `glob_scan_max_depth` 는 `[permissions.<name>.filesystem]` 바로 아래에 둔다.
+  `":workspace_roots"` 안에 넣으면 `did not match any variant of untagged enum` 으로 거부된다
+- **특수 토큰(`:minimal` 등)은 검증되지 않는다.** 오타를 내도 설정이 그대로 로드되므로
+  조용히 무시될 수 있다. 공식 레퍼런스에 있는 토큰만 쓸 것
+- `--unrestricted` 는 `sandbox_mode` 뿐 아니라 **`default_permissions` 도 함께 덮어야** 한다.
+  안 그러면 `[permissions.locked]` 가 살아남아 파일 접근이 계속 막힌다
 
 ---
 

@@ -29,8 +29,9 @@ EXPECTED = {
     "model_reasoning_effort": "medium",
     "service_tier": "fast",
     "approvals_reviewer": "user",
-    "approval_policy": "on-request",
+    "approval_policy": "untrusted",
     "sandbox_mode": "workspace-write",
+    "default_permissions": "locked",
 }
 EXPECTED_FEATURES = {
     "goals": True,
@@ -182,7 +183,7 @@ class OverlayFileItself(unittest.TestCase):
             self.doc = tomllib.load(fh)
 
     def test_root_scalars_are_at_root(self):
-        for key in list(EXPECTED) + ["default_permissions"]:
+        for key in EXPECTED:
             self.assertIn(key, self.doc, f"{key} 가 루트에 없다 — 테이블 헤더 아래로 밀려났는지 확인")
 
     def test_features_holds_only_booleans(self):
@@ -199,14 +200,27 @@ class OverlayFileItself(unittest.TestCase):
         # glob 에는 "deny" 만 줄 수 있다("read" 는 정확한 경로나 "/**" 필요).
         fs = self.doc["permissions"][self.doc["default_permissions"]]["filesystem"]
         for path, access in fs.items():
-            if isinstance(access, dict):
-                continue  # ":workspace_roots" 같은 하위 테이블
+            if isinstance(access, (dict, int)):
+                continue  # ":workspace_roots" 하위 테이블, glob_scan_max_depth 같은 설정값
             self.assertTrue(path.startswith(("/", "~/", ":")),
                             f"경로가 /, ~/, : 로 시작하지 않는다: {path}")
         for path, access in fs.get(":workspace_roots", {}).items():
             if "*" in path and access != "deny":
                 self.assertTrue(path.endswith("/**"),
                                 f'glob 에 "{access}" 를 주려면 /** 로 끝나야 한다: {path}')
+
+    def test_glob_scan_max_depth_sits_under_filesystem(self):
+        # :workspace_roots 안에 넣으면 코덱스가
+        # "did not match any variant of untagged enum FilesystemPermissionToml" 로 거부한다
+        fs = self.doc["permissions"][self.doc["default_permissions"]]["filesystem"]
+        self.assertNotIn("glob_scan_max_depth", fs.get(":workspace_roots", {}),
+                         "glob_scan_max_depth 는 filesystem 바로 아래에 있어야 한다")
+
+    def test_unrestricted_overlay_also_overrides_the_profile(self):
+        # sandbox_mode 만 덮으면 [permissions.locked] 가 살아남아 파일 접근이 계속 막힌다
+        with open(UNRESTRICTED_OVERLAY, "rb") as fh:
+            unres = tomllib.load(fh)
+        self.assertEqual(unres.get("default_permissions"), ":danger-full-access")
 
 
 class UnrestrictedOverlay(unittest.TestCase):
@@ -215,13 +229,15 @@ class UnrestrictedOverlay(unittest.TestCase):
         data = tomllib.loads(upsert(read("app-generated.toml"), overlay))
         self.assertEqual(data["approval_policy"], "never")
         self.assertEqual(data["sandbox_mode"], "danger-full-access")
+        self.assertEqual(data["default_permissions"], ":danger-full-access")
         self.assertEqual(data["model"], "gpt-5.5")  # 기본 오버레이의 나머지는 유지
 
     def test_base_overlay_alone_is_safe(self):
         overlay = load_overlay([BASE_OVERLAY])
         data = tomllib.loads(upsert(read("app-generated.toml"), overlay))
-        self.assertEqual(data["approval_policy"], "on-request")
+        self.assertEqual(data["approval_policy"], "untrusted")
         self.assertEqual(data["sandbox_mode"], "workspace-write")
+        self.assertEqual(data["default_permissions"], "locked")
 
 
 if __name__ == "__main__":

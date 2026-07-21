@@ -68,6 +68,8 @@ link_file() {
       skip "$label (이미 연결됨)"
       return 0
     fi
+    # 끊어진 링크는 realpath 가 빈 값을 주므로 readlink 로 원래 대상을 보여준다
+    [ -n "$cur" ] || cur="$(readlink "$dst") (끊어짐 — 레포를 옮겼나?)"
     warn "$label 이 다른 곳을 가리키고 있어 교체한다: $cur"
     [ "$DRY_RUN" -eq 1 ] || rm "$dst"
   elif [ -e "$dst" ]; then

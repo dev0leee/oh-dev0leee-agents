@@ -10,3 +10,8 @@
 
 approval_policy = "never"
 sandbox_mode = "danger-full-access"
+
+# default_permissions 도 함께 덮어야 한다.
+# 이걸 빼면 config.toml 의 [permissions.locked] 프로필이 계속 살아 있어서
+# sandbox_mode 만 바뀌고 파일 접근은 여전히 막힌다.
+default_permissions = ":danger-full-access"

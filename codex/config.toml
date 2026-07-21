@@ -14,14 +14,17 @@ approvals_reviewer = "user"
 
 # 안전한 기본값. 위험한 조합은 codex/unrestricted.toml 에 분리해 두었고
 # ./scripts/install-codex.sh --unrestricted 로만 적용된다.
-approval_policy = "on-request"
+#
+# untrusted = 신뢰된 명령이 아니면 승인을 받는다 (doctor 표시: approval UnlessTrusted).
+# sandbox_mode 는 default_permissions 와 함께 둬도 되고, 프로필이 없어질 경우의 방어선으로 남긴다.
+approval_policy = "untrusted"
 sandbox_mode = "workspace-write"
 
-# 아래 [permissions.dev] 를 기본 프로필로 쓴다.
+# 아래 [permissions.locked] 를 기본 프로필로 쓴다.
 # ⚠️ 루트 스칼라이므로 반드시 첫 [테이블] 헤더보다 위에 있어야 한다.
 #    [features] 뒤에 두면 TOML 규칙상 features.default_permissions 가 되어
 #    "expected a boolean" 으로 설정 로드가 실패한다.
-default_permissions = "dev"
+default_permissions = "locked"
 
 [features]
 goals = true
@@ -33,25 +36,29 @@ js_repl = false
 
 # ── 파일 접근 권한 ────────────────────────────────────────────────
 # Claude 의 permissions.deny 중 "파일 glob" 부분에 대응한다.
-# 명령 단위 차단(sudo, rm -rf 등)은 Codex 에 같은 개념이 없고
-# sandbox_mode + approval_policy 가 대신한다. README 의 대응표 참고.
+# 명령 단위 차단(rm -rf, sudo 등)은 Codex 에 대응 개념이 없어서
+# instructions/AGENTS.md 의 "금지 명령" 규칙 + approval_policy 로 대신한다.
+# README 의 대응표 참고.
 #
 # 경로 규칙 (codex-cli 0.144.6 에서 실측):
 #   - 절대경로이거나 "~/" 또는 ":" 로 시작해야 한다
 #   - 워크스페이스 상대 glob 은 [.":workspace_roots"] 아래에 둔다
 #   - glob 은 "deny" 만 된다. "read" 는 정확한 경로나 "/**" 가 필요하다
+#   - glob_scan_max_depth 는 filesystem 바로 아래에 둔다.
+#     :workspace_roots 안에 넣으면 "did not match any variant" 로 거부된다
+#   - 경로 하나당 접근수준 하나다. Claude 처럼 Read/Write 목록을 따로 두면
+#     같은 키가 중복돼 "duplicate key" 로 파싱이 실패한다.
+#     "deny" 하나가 읽기와 쓰기를 모두 막는다.
 
-[permissions.dev]
-description = "일상 개발용. 시크릿 파일 접근을 차단한다."
-extends = ":workspace"
+[permissions.locked]
+description = "기본 잠금. 워크스페이스만 쓰기 가능하고 시크릿은 전부 차단한다."
 
-[permissions.dev.filesystem]
-"~/.ssh/**" = "deny"
-"~/.aws/**" = "deny"
-"~/.npmrc" = "deny"
-"~/.pypirc" = "deny"
+[permissions.locked.filesystem]
+":minimal" = "read"
+glob_scan_max_depth = 8
 
-[permissions.dev.filesystem.":workspace_roots"]
+[permissions.locked.filesystem.":workspace_roots"]
+"." = "write"
 "**/.env*" = "deny"
 "**/.dev.vars*" = "deny"
 "**/*.pem" = "deny"
@@ -64,4 +71,4 @@ extends = ":workspace"
 "**/config/credentials.json" = "deny"
 "**/.npmrc" = "deny"
 "**/.pypirc" = "deny"
-".github/workflows/**" = "read"
+".github/workflows/**" = "deny"
