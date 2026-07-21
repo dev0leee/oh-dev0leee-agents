@@ -47,9 +47,29 @@
 프로젝트 신뢰 목록이 커밋된다. 다른 기기에서 pull 하면 그 기기에 안 맞는 trust 상태가 덮인다.
 
 대신 **내가 선언한 키만 덮어쓰고 나머지는 바이트 그대로 통과**시킨다
-(`scripts/toml_upsert.py`, `jq '. * $mine'`).
+(`scripts/toml_upsert.py`, `scripts/install-claude.sh`).
 
 → 이쪽을 바꿨으면 pull 후 **`./scripts/install.sh` 를 다시 돌려야 한다.**
+
+### settings.json 소유권
+
+`~/.claude/settings.json` 은 최상위 키마다 **누가 소유하는지**를 정해두고 병합한다.
+목록은 `scripts/install-claude.sh` 의 `SETTINGS_OWNED` / `SETTINGS_SHALLOW` 에 있다.
+
+| 키 | 소유 | 동작 |
+|---|---|---|
+| `permissions` | 레포 | **통째로 교체.** 손으로 넣은 `permissions.allow` 도 사라진다 |
+| `statusLine` | 레포 | 통째로 교체 |
+| `tui` | 레포 | 통째로 교체 |
+| `env` | 공유 | 최상위 키 단위로만 합친다. 내가 추가한 환경변수는 남는다 |
+| 그 외 전부 | 사용자·CLI | 건드리지 않는다 (`enabledPlugins`, `extraKnownMarketplaces`, `hooks`, `model` …) |
+
+deny 목록이 단일 원본이어야 해서 `permissions` 는 재귀 병합하지 않는다. 재귀 병합을 하면
+예전에 넣어둔 `allow` 규칙이 새 deny 규칙보다 오래 살아남아 조용히 구멍이 된다.
+교체로 값을 잃는 키가 있으면 설치할 때 이름을 찍어주고, 덮어쓰기 전 `.bak` 을 남긴다.
+
+`claude/settings.json` 에 새 최상위 키를 추가하면서 두 목록 어디에도 넣지 않으면
+설치가 그 자리에서 멈춘다. 소유권을 정하지 않은 키가 조용히 무시되지 않게 하기 위한 것이다.
 
 ---
 
@@ -261,6 +281,9 @@ brew install gitleaks
   `install-codex.sh` 는 미설치를 감지해 경고만 낸다.
 - **`codex mcp add` 는 `config.toml` 전체를 자기 포맷으로 다시 쓴다.** 섹션 순서가 바뀌고
   `120` 이 `120.0` 이 되는 식이다. 값은 보존되므로 문제는 없지만 diff 가 커 보일 수 있다.
+- **플러그인 상태 판정은 `claude plugin list --json` 에 의존한다.** JSON 을 쓸 수 없는 버전
+  (또는 `jq` 미설치)에서는 사람용 출력의 `❯` 아이콘과 `Status:` 문구를 파싱하는 폴백으로 내려간다.
+  이 폴백은 CLI 가 표시를 바꾸면 깨지므로, 그때는 경고를 찍고 오탐 가능성을 알린다.
 - `network_access` 는 Codex 의 유효한 최상위 키가 아니다(공식 레퍼런스에 없음). 기존 파일에 있어도
   건드리지 않고 그대로 둔다. 네트워크는 `features.network_proxy` 나 `[sandbox_workspace_write]` 소관이다.
 

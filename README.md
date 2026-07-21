@@ -71,7 +71,7 @@ tests/            config.toml 병합기 회귀 테스트
 | `~/.claude/.omc-config.json` | 링크 | OMC 기본값 |
 | `~/.claude/hud/omc-hud-min.mjs` | 링크 | statusline 스크립트 |
 | `~/.claude/skills/<name>` | 링크 | `skills/` 의 내 스킬 |
-| `~/.claude/settings.json` | 병합 | 전역 deny·ask 목록 + statusLine + tui (`enabledPlugins` 등 기존 키는 보존) |
+| `~/.claude/settings.json` | 병합 | 전역 deny·ask 목록 + statusLine + tui — [소유권 기반 병합](docs/DETAILS.md#settingsjson-소유권) |
 | 마켓플레이스 | CLI | `claude-plugins-official`, `omc`, `last30days-skill` |
 | 플러그인 | CLI | `oh-my-claudecode@omc` (enabled), `last30days@last30days-skill` (disabled) |
 | MCP | CLI | `context7`, `github`, `lazyweb`, `exa`, `filesystem` |
