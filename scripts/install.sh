@@ -49,7 +49,6 @@ cat <<'EOF'
 수동으로 해야 하는 것:
   1) Claude 로그인       claude  (최초 1회)
   2) Codex 로그인        codex login
-  3) GitHub MCP OAuth    claude 실행 후 /mcp 에서 github 선택해 로그인
-  4) Lazyweb MCP 인증    최초 사용 시 안내를 따를 것
-  5) API 키              cp .env.example .env.local 후 값 입력, 그리고 재실행
+  3) Lazyweb MCP 인증    최초 사용 시 안내를 따를 것
+  4) API 키              cp .env.example .env.local 후 값 입력, 그리고 재실행
 EOF

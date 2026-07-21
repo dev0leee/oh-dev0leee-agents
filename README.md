@@ -74,7 +74,7 @@ tests/            config.toml 병합기 회귀 테스트
 | `~/.claude/settings.json` | 병합 | 전역 deny·ask 목록 + statusLine + tui — [소유권 기반 병합](docs/DETAILS.md#settingsjson-소유권) |
 | 마켓플레이스 | CLI | `claude-plugins-official`, `omc`, `last30days-skill` |
 | 플러그인 | CLI | `oh-my-claudecode@omc` (enabled), `last30days@last30days-skill` (disabled) |
-| MCP | CLI | `context7`, `github`, `lazyweb`, `exa`, `filesystem` |
+| MCP | CLI | `context7`, `lazyweb`, `exa`, `filesystem` |
 
 ### Codex 에 설치되는 것
 
