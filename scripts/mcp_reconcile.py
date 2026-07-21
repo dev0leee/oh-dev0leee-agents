@@ -7,7 +7,7 @@
     같음               -> 아무것도 안 함  (OAuth 세션 보존)
 
 `add || true` 를 쓰지 않는 이유: 선언을 바꿔도 기존 등록이 갱신되지 않는다.
-무조건 remove+add 하지 않는 이유: github/lazyweb 같은 HTTP 서버의 OAuth 인증이 매번 풀린다.
+무조건 remove+add 하지 않는 이유: lazyweb 같은 HTTP 서버의 OAuth 인증이 매번 풀린다.
 
 비교 대상
     stdio : type, command, args(순서 포함), env 키의 "집합"

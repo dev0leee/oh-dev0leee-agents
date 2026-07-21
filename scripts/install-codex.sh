@@ -98,16 +98,39 @@ else
 fi
 
 step "[3/4] 플러그인"
-# Codex 마켓플레이스는 전부 로컬 경로(앱이 자동 제공)이고, omo@sisyphuslabs 는
-# 원본 URL 이 기록돼 있지 않아 재현할 수 없다. README 의 수동 단계를 따를 것.
-if have codex; then
-  if codex plugin list 2>/dev/null | grep -q 'omo@sisyphuslabs'; then
-    skip "omo@sisyphuslabs (이미 설치됨)"
+# Codex 마켓플레이스는 전부 로컬 경로라 sisyphuslabs 캐시만 봐서는 원본을 알 수 없다.
+# 원본은 npm 의 lazycodex-ai (github.com/code-yeongyu/lazycodex) 이고, 그 설치기가
+# 플러그인을 omo 라는 이름으로 sisyphuslabs 마켓플레이스에 등록한다. 이름이 달라서
+# 캐시만 보면 연결이 안 보인다.
+OMO_INSTALL=(npx --yes lazycodex-ai install)
+
+# `codex plugin list` 는 미설치 플러그인도 같이 찍는다. 이름만 grep 하면
+# "not installed" 줄까지 설치된 것으로 읽는다. 상태 칸을 같이 본다.
+omo_installed() {
+  codex plugin list 2>/dev/null |
+    awk '$1 == "omo@sisyphuslabs" && $0 !~ /not installed/ { found = 1 } END { exit !found }'
+}
+
+if ! have codex; then
+  warn "codex CLI 가 없어 플러그인 확인을 건너뛴다"
+elif omo_installed; then
+  skip "omo@sisyphuslabs (이미 설치됨)"
+elif ! have npx; then
+  warn "omo@sisyphuslabs 미설치 — npx 가 없다. 수동으로: ${OMO_INSTALL[*]}"
+elif [ "$DRY_RUN" -eq 1 ]; then
+  skip "(dry-run) omo@sisyphuslabs 설치: ${OMO_INSTALL[*]}"
+elif confirm "omo@sisyphuslabs (lazycodex) 를 설치할까? — ${OMO_INSTALL[*]}"; then
+  if "${OMO_INSTALL[@]}"; then
+    if omo_installed; then
+      ok "omo@sisyphuslabs 설치"
+    else
+      warn "설치기는 끝났는데 플러그인이 목록에 없다 — codex plugin list 로 확인할 것"
+    fi
   else
-    warn "omo@sisyphuslabs 미설치 — 마켓플레이스 원본이 로컬 캐시라 자동 복원 불가. README 참고."
+    warn "omo@sisyphuslabs 설치 실패 — 수동으로: ${OMO_INSTALL[*]}"
   fi
 else
-  warn "codex CLI 가 없어 플러그인 확인을 건너뛴다"
+  warn "omo@sisyphuslabs 미설치 — 나중에: ${OMO_INSTALL[*]}"
 fi
 
 step "[4/4] MCP 서버"

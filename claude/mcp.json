@@ -12,12 +12,6 @@
       "args": ["-y", "@upstash/context7-mcp"],
       "targets": ["claude", "codex"]
     },
-    "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "targets": ["claude"],
-      "note": "최초 연결 시 OAuth 로그인 필요. codex 는 제외 — codex-cli 0.144.6 에서 'Dynamic client registration not supported' 로 등록 실패한다."
-    },
     "lazyweb": {
       "type": "http",
       "url": "https://www.lazyweb.com/mcp",
