@@ -37,7 +37,7 @@ cp .env.example .env.local      # EXA_API_KEY, FILESYSTEM_DIR 채우기
 |---|---|
 | `./scripts/install.sh` | 전체 설치 (Claude + Codex + 진단) |
 | `./scripts/install.sh --claude-only` / `--codex-only` | 한쪽만 |
-| `./scripts/doctor.sh` | 진단만. 아무것도 고치지 않는다 |
+| `./scripts/doctor.sh` | 진단만. 아무것도 고치지 않는다 (문제가 있으면 종료 코드 1) |
 
 로그인(Claude · Codex)과 OAuth 인증은 자동 복원되지 않는다 →
 [수동 단계](docs/DETAILS.md#자동으로-복원되지-않는-것-수동)

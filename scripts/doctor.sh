@@ -4,6 +4,10 @@
 #   ./scripts/doctor.sh
 #
 # "설정이 존재한다" 와 "실제로 인증돼 동작한다" 는 다른 상태라서 구분해 보여준다.
+#
+# 종료 코드: 문제 0 건이면 0, 하나라도 있으면 1.
+# CI 나 `./scripts/doctor.sh && ...` 에서 판정할 수 있게 하기 위한 것이다.
+# install.sh 는 `|| true` 로 감싸 호출하므로 설치 흐름은 끊기지 않는다.
 set -uo pipefail
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
@@ -129,7 +133,8 @@ note "확인하려면: claude mcp list  /  codex mcp list"
 printf '\n'
 if [ "$PROBLEMS" -eq 0 ]; then
   ok "문제 없음"
+  exit 0
 else
   err "문제 $PROBLEMS 건"
+  exit 1
 fi
-exit 0
