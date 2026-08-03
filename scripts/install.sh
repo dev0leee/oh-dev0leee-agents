@@ -41,6 +41,9 @@ printf '\n%s\n' "──────── 시크릿 검사 훅 ─────�
 # 이 레포에만 건다. 전역 적용은 install-gitleaks.sh --global 로 따로.
 "$HERE/install-gitleaks.sh" ${passthru[@]+"${passthru[@]}"}
 
+printf '\n%s\n' "──────── git diff (delta) ────────"
+"$HERE/install-delta.sh" ${passthru[@]+"${passthru[@]}"}
+
 printf '\n%s\n' "──────── 진단 ────────"
 "$HERE/doctor.sh" || true
 

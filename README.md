@@ -35,8 +35,8 @@ cp .env.example .env.local      # EXA_API_KEY, FILESYSTEM_DIR 채우기
 
 | 명령 | 하는 일 |
 |---|---|
-| `./scripts/install.sh` | 전체 설치 (Claude + Codex + 진단) |
-| `./scripts/install.sh --claude-only` / `--codex-only` | 한쪽만 |
+| `./scripts/install.sh` | 전체 설치 (Claude + Codex + git + 진단) |
+| `./scripts/install.sh --claude-only` / `--codex-only` | 한쪽만 (git 설정은 어느 쪽이든 같이 된다) |
 | `./scripts/doctor.sh` | 진단만. 아무것도 고치지 않는다 (문제가 있으면 종료 코드 1) |
 
 로그인(Claude · Codex)과 OAuth 인증은 자동 복원되지 않는다 →
@@ -51,6 +51,7 @@ instructions/     지침 원본 — CLAUDE.md, AGENTS.md (각각 그 자체로 �
 claude/           Claude 전용 — settings.json, omc-config.json, plugins.txt, mcp.json, hud/
 codex/            Codex 전용 — config.toml(안전 기본값), unrestricted.toml(위험 권한)
 skills/           두 도구가 공유하는 내 스킬
+git/              git 자체 설정 — delta.gitconfig (diff 가독성)
 templates/project/ 새 프로젝트에 복사할 시작 세트
 scripts/          설치·진단 도구
 tests/            config.toml 병합기 회귀 테스트
@@ -91,6 +92,17 @@ tests/            config.toml 병합기 회귀 테스트
 > 파일 접근만 `[permissions.locked]` 로 실제 강제된다 →
 > [권한 설정 상세](docs/DETAILS.md#권한-설정)
 
+### git 에 설치되는 것
+
+| 대상 | 방&#8288;식 | 내용 |
+|---|---|---|
+| `~/.gitconfig` | 포&#8288;함 | `include.path` 한 줄 → `git/delta.gitconfig` ([delta](https://github.com/dandavison/delta) pager, 한글 word-diff) |
+| 이 레포 `core.hooksPath` | CLI | `.githooks` — gitleaks pre-commit |
+
+`brew install git-delta` 는 확인 후 진행한다. 되돌리기는
+`git config --global --unset include.path <레포>/git/delta.gitconfig` 한 줄 →
+[delta 설정 상세](docs/DETAILS.md#git-diff-delta)
+
 ---
 
 ## 5. 추가 내용
@@ -108,6 +120,7 @@ tests/            config.toml 병합기 회귀 테스트
 - [권한 설정 · Codex 파일 경로 규칙 (0.144.6 실측)](docs/DETAILS.md#권한-설정)
 - [Codex 위험 권한](docs/DETAILS.md#codex-위험-권한)
 - [보안 · gitleaks pre-commit 훅](docs/DETAILS.md#보안)
+- [git diff 가독성 · delta 설정](docs/DETAILS.md#git-diff-delta)
 - [알려진 한계](docs/DETAILS.md#알려진-한계)
 - [테스트](docs/DETAILS.md#테스트)
 - [검증 버전](docs/DETAILS.md#검증-버전)

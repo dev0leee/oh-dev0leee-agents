@@ -1,0 +1,36 @@
+# delta 설정 원본. ~/.gitconfig 에 직접 쓰지 않고 include.path 로 끌어다 쓴다.
+# 연결:  ./scripts/install-delta.sh
+# 해제:  git config --global --unset include.path <이 파일 경로>
+#
+# 출처: https://blog.benelog.net/git-diff-delta
+
+[core]
+	# git diff / log / show 의 pager 를 delta 로 교체한다. 출력이 파이프로
+	# 넘어가면 git 이 pager 를 자동으로 끄므로 스크립트는 영향받지 않는다.
+	pager = delta
+
+[interactive]
+	# git add -p 처럼 대화형 화면에도 같은 하이라이팅을 적용한다.
+	# --color-only 가 없으면 delta 가 diff 를 재구성해 add -p 가 깨진다.
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true      # pager 안에서 n / N 으로 파일 단위 이동
+	line-numbers = true
+	hyperlinks = false   # 터미널에 따라 깨져서 끈다
+
+	# 이 설정이 핵심이다. 없으면 한글 문장을 한 글자만 고쳐도 줄 전체가
+	# 통째로 바뀐 것처럼 보인다. 한글은 음절 단위, 영문·숫자는 단어 단위로
+	# 쪼개서 실제로 달라진 토큰만 강조한다.
+	# delta 는 Rust regex 라 [가-힣] 범위를 쓸 수 있다 (git 내장 word-diff 는 POSIX ERE 라 불가).
+	word-diff-regex = "[가-힣]|[A-Za-z0-9_]+|[^ \t]"
+
+	# 바뀐 줄은 은은하게, 그 안에서 실제로 달라진 부분만 진하게 (2단계 강조).
+	minus-emph-style = normal "#7a2323"
+	plus-emph-style = normal "#2b5b2b"
+
+[diff]
+	colorMoved = default   # 삭제+추가가 아니라 "이동"임을 따로 표시
+
+[merge]
+	conflictStyle = zdiff3   # 충돌 시 공통 조상까지 보여준다

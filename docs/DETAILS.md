@@ -91,6 +91,7 @@ deny 목록이 단일 원본이어야 해서 `permissions` 는 재귀 병합하�
 | `./scripts/install.sh --dry-run` | 아무것도 바꾸지 않고 계획만 출력 |
 | `./scripts/install-codex.sh --unrestricted` | Codex 위험 권한을 전역 적용 (확인 프롬프트) |
 | `./scripts/install-gitleaks.sh [--global]` | gitleaks pre-commit 훅 설치 (`--global` 은 모든 레포에 적용) |
+| `./scripts/install-delta.sh` | delta 설치 + 전역 gitconfig 에 `include.path` 연결 |
 | `./scripts/doctor.sh` | 진단만. 아무것도 고치지 않는다 |
 | `./scripts/adopt.sh <홈경로> <레포경로>` | 기존 홈 파일을 레포로 흡수하고 링크로 교체 |
 | `./scripts/init-project.sh <경로>` | 새 프로젝트에 `AGENTS.md` / `CLAUDE.md` 배치 |
@@ -267,6 +268,41 @@ brew install gitleaks
 - 히스토리 전체 검사: `gitleaks git . --redact`
 - ⚠️ `--global` 은 전역 `core.hooksPath` 를 켜므로 **기존 레포의 `.git/hooks/` 안 훅이 무시된다.**
   husky 처럼 레포별로 `core.hooksPath` 를 잡는 도구는 영향이 없다. 스크립트가 적용 전에 확인을 받는다.
+
+---
+
+## git diff (delta)
+
+기본 `git diff` 는 지운 줄 전체가 빨강, 넣은 줄 전체가 초록이라 **긴 줄에서 뭐가 바뀌었는지 눈으로 찾아야 한다.**
+[delta](https://github.com/dandavison/delta) 는 git 의 pager 를 대체해서 바뀐 줄 안에서 실제로 달라진 토큰만 진하게 칠해준다.
+설정은 [이 글](https://blog.benelog.net/git-diff-delta)을 기준으로 잡았다.
+
+```bash
+brew install git-delta
+./scripts/install-delta.sh
+```
+
+- 설정 본체는 `git/delta.gitconfig` **하나**다. `~/.gitconfig` 는 건드리지 않고
+  `include.path` 한 줄만 추가한다. 그래서 `git pull` 하면 다른 기기에도 그대로 반영되고,
+  되돌리기는 `git config --global --unset include.path <레포>/git/delta.gitconfig` 한 줄이다.
+- **`word-diff-regex` 가 핵심이다.** `[가-힣]` 로 한글은 음절 단위, 영문·숫자는 단어 단위로 쪼갠다.
+  이게 없으면 한글 문서에서 조사 하나만 고쳐도 줄 전체가 바뀐 것처럼 보인다.
+  delta 는 Rust regex 라 이 범위를 쓸 수 있다(git 내장 `--word-diff-regex` 는 POSIX ERE 라 `[^[:space:]]` 정도가 한계).
+- `interactive.diffFilter` 에 **`--color-only` 가 반드시 있어야 한다.** 없으면 delta 가 diff 를
+  재구성해버려서 `git add -p` 의 hunk 선택이 깨진다.
+- 로컬 전용이다. 커밋 내용이나 diff 결과 자체는 바뀌지 않으므로 팀원에게 영향이 없다(각자 설치해야 한다).
+- 파이프로 넘기면(`git diff | grep`) git 이 pager 를 자동으로 끄므로 스크립트는 영향받지 않는다.
+- ⚠️ **`include.path` 는 절대경로다.** 레포를 옮기면 git 이 조용히 무시한다(에러도 안 난다).
+  `./scripts/install.sh` 를 다시 돌리면 새 경로로 연결된다. `doctor.sh` 도 잡아낸다.
+- ⚠️ 전역 `core.pager` 를 이미 쓰고 있었다면 include 가 뒤에 붙으므로 **delta 가 우선한다.**
+  스크립트가 기존 값을 발견하면 경고를 띄운다.
+
+| 상황 | 명령 |
+|---|---|
+| 평소 | `git diff` (설치 후 자동) |
+| 좌우 2단 비교 | `git -c delta.side-by-side=true diff` |
+| 한 줄에 겹쳐 보기 (교열용) | `git diff --word-diff=color --word-diff-regex='[^[:space:]]'` |
+| pager 안에서 파일 이동 | `n` / `N` |
 
 ---
 

@@ -61,6 +61,19 @@ for f in "$CLAUDE_DIR/CLAUDE.md" "$CODEX_DIR/AGENTS.md"; do
   fi
 done
 
+# delta 는 없어도 되지만, gitconfig 가 delta 를 pager 로 가리키는데 바이너리가
+# 없으면 git diff 자체가 깨진다. 그 조합만 문제로 잡는다.
+DELTA_CONF="$REPO/git/delta.gitconfig"
+if git config --global --get-all include.path 2>/dev/null | grep -qxF "$DELTA_CONF"; then
+  if have delta; then
+    ok "delta 연결됨 ($(delta --version 2>/dev/null | head -1))"
+  else
+    bad "gitconfig 는 delta 를 pager 로 가리키는데 delta 가 없다 — brew install git-delta"
+  fi
+else
+  note "delta 미연결 — ./scripts/install-delta.sh (git diff 가독성 개선, 선택)"
+fi
+
 load_env
 for var in EXA_API_KEY FILESYSTEM_DIR; do
   if [ -n "${!var:-}" ]; then
