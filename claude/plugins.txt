@@ -14,4 +14,4 @@ marketplace	omc	https://github.com/Yeachan-Heo/oh-my-claudecode.git
 marketplace	last30days-skill	mvanhorn/last30days-skill
 
 plugin	oh-my-claudecode@omc	enabled
-plugin	last30days@last30days-skill	disabled
+plugin	last30days@last30days-skill	enabled
